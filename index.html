@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>English Byte Interactive</title>
+<meta name="description" content="LMS gamifikasi gratis untuk belajar bahasa Inggris: jalur belajar, streak, XP, liga, hati, cerita interaktif, latihan berbicara dan mendengarkan.">
+<meta name="theme-color" content="#6c4cf1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2250;--mut:#7a739c;--bg:#f4f1ff;--pri:#6c4cf1;--priD:#4b32bf;--ok:#1fbf75;--okD:#118a53;--okBg:#d9f7e8;--bad:#ff5a5f;--badD:#cc3c41;--badBg:#ffe1e2;--gold:#ffb703;--line:#e1dcf5}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:'Baloo 2',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.35}
+#app{max-width:520px;margin:0 auto;min-height:100dvh;position:relative;padding:0 16px 100px}
+h1,h2,h3,p{margin:0}h1{font-size:34px;line-height:1.05;font-weight:800}h2{font-size:23px;font-weight:800;margin:14px 0}
+button,input,textarea{font:inherit;color:inherit}
+.btn{border:0;border-radius:16px;padding:11px 20px;cursor:pointer;background:var(--pri);color:#fff;box-shadow:0 5px 0 var(--priD);width:100%;font-weight:700;font-size:18px;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--priD)}
+.btn.ok{background:var(--ok);box-shadow:0 5px 0 var(--okD)}.btn.bad{background:var(--bad);box-shadow:0 5px 0 var(--badD)}
+.btn.ghost{background:#fff;color:var(--pri);border:2px solid var(--line);box-shadow:0 5px 0 var(--line)}
+.btn[disabled]{background:#d9d4ee;box-shadow:0 5px 0 #c3bde0;color:#9a93b9;cursor:not-allowed}
+.stack>*+*{margin-top:14px}.c{text-align:center}.mut{color:var(--mut)}
+.top{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;padding:12px 4px;background:var(--bg);font-weight:800}
+.pill{display:flex;gap:5px;align-items:center}
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:#fff;border-top:2px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.bar div{max-width:520px;margin:0 auto;display:flex}
+.bar button{flex:1;border:0;background:none;padding:8px 0;font-weight:700;color:var(--mut);cursor:pointer;font-size:14px}
+.bar button b{display:block;font-size:24px;line-height:1.1}.bar button.on{color:var(--pri)}
+.card,.opt,.chip{background:#fff;border:2px solid var(--line);border-bottom-width:5px;border-radius:16px;padding:12px 14px}
+.opt{display:block;width:100%;text-align:left;font-weight:600;cursor:pointer;margin-top:10px}
+.opt.sel,.card.sel{border-color:var(--pri);background:#eeeaff}.opt.good{border-color:var(--ok);background:var(--okBg)}.opt.err{border-color:var(--bad);background:var(--badBg)}
+.chip{display:inline-block;margin:4px;padding:6px 14px;font-weight:700;cursor:pointer}.chip.used{opacity:.25;pointer-events:none}
+.ans{min-height:64px;border-bottom:2px solid var(--line);padding:6px 0;margin:12px 0}
+.goal{height:14px;background:var(--line);border-radius:9px;overflow:hidden;margin-top:6px}.goal i,.prog i{display:block;height:100%;background:var(--ok);border-radius:9px;transition:width .4s}
+.unit{border-radius:18px;padding:12px 16px;color:#fff;font-weight:800;margin:26px 0 12px;display:flex;justify-content:space-between;align-items:center}
+.path{display:flex;flex-direction:column;align-items:center;gap:16px}
+.node{width:76px;height:76px;border-radius:50%;border:0;font-size:32px;cursor:pointer;background:var(--ok);box-shadow:0 7px 0 var(--okD);position:relative}
+.node:active{transform:translateY(5px);box-shadow:0 2px 0 var(--okD)}
+.node.lock{background:#d9d4ee;box-shadow:0 7px 0 #b9b2d8;filter:grayscale(1)}.node.now{background:var(--pri);box-shadow:0 7px 0 var(--priD)}
+.node.now::after{content:"MULAI";position:absolute;top:-30px;left:50%;transform:translateX(-50%);background:#fff;color:var(--pri);border:2px solid var(--line);border-radius:10px;padding:0 10px;font-size:14px;font-weight:800;animation:bob 1.1s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,-6px)}}
+.ltop{display:flex;gap:12px;align-items:center;padding:16px 0}.x{border:0;background:none;font-size:24px;color:var(--mut);cursor:pointer}
+.prog{flex:1;height:16px;background:var(--line);border-radius:9px;overflow:hidden}
+#foot{position:fixed;left:0;right:0;bottom:0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));background:var(--bg);z-index:7}
+#foot>*{max-width:488px;margin:0 auto;display:block}
+#foot.ok{background:var(--okBg)}#foot.bad{background:var(--badBg)}#foot .msg{font-weight:800;margin-bottom:10px;font-size:19px}
+.say{display:flex;align-items:center;gap:12px}.say b{font-size:22px}
+.spk{border:0;background:var(--pri);color:#fff;border-radius:14px;width:52px;height:52px;font-size:24px;cursor:pointer;box-shadow:0 4px 0 var(--priD);flex:none}
+.mic{width:96px;height:96px;border-radius:50%;border:0;background:var(--bad);font-size:40px;box-shadow:0 7px 0 var(--badD);cursor:pointer;display:block;margin:24px auto 12px}
+.bub{background:#fff;border:2px solid var(--line);border-radius:16px;padding:10px 14px;font-weight:600;flex:1}
+input.t{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px;font-size:19px;background:#fff}
+.mas{flex:none}.mas.cheer{animation:hop .5s 3}.mas.sad{transform:rotate(-6deg)}@keyframes hop{50%{transform:translateY(-14px)}}
+.shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.row{display:flex;gap:10px}.row>*{flex:1}.stat{text-align:center;font-weight:800}.stat small{display:block;color:var(--mut);font-weight:600}
+.rk{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;font-weight:700}.rk.me{background:#eeeaff;border:2px solid var(--pri)}.rk.up{color:var(--okD)}.rk span:nth-child(2){flex:1}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:20}
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:14px;z-index:30;font-weight:700}
+table.tb{width:100%;border-collapse:collapse;font-size:14px}.tb td,.tb th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div id="app"></div><canvas id="cf"></canvas>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<script>
+const $=s=>document.querySelector(s),sh=a=>[...a].sort(()=>Math.random()-.5),pick=a=>a[Math.random()*a.length|0];
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const today=()=>ymd(new Date()),yest=()=>ymd(new Date(Date.now()-864e5));
+const wk=()=>{const d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return ymd(d)};
+const norm=s=>s.toLowerCase().replace(/[^a-z0-9 ]/g,'').replace(/\s+/g,' ').trim();
+const LV=['','Pemula','Menengah','Mahir'];
+const MASC={byte:{n:'Byte',c:'#6c4cf1',lang:'en-US',p:1,r:1,d:'Burung hantu, aksen Amerika'},lila:{n:'Lila',c:'#ff6fae',lang:'en-GB',p:1.35,r:.95,d:'Kucing ceria, aksen Inggris'},zed:{n:'Zed',c:'#18b6cc',lang:'en-AU',p:.7,r:.9,d:'Robot santai, aksen Australia'}};
+const UNITS=[
+{t:'Kosakata Dasar',i:'🍎',c:'#6c4cf1',items:[['apple','apel'],['book','buku'],['water','air'],['house','rumah'],['cat','kucing'],['dog','anjing'],['red','merah'],['big','besar']]},
+{t:'Salam & Perkenalan',i:'👋',c:'#e8590c',items:[['Hello how are you','Halo apa kabar'],['My name is Sam','Namaku Sam'],['Nice to meet you','Senang bertemu denganmu'],['Good morning','Selamat pagi'],['Thank you very much','Terima kasih banyak'],['See you tomorrow','Sampai jumpa besok']]},
+{t:'Kalimat Sederhana',i:'🧩',c:'#0b9f8a',items:[['I drink water every day','Aku minum air setiap hari'],['She reads a book','Dia membaca buku'],['We go to school','Kami pergi ke sekolah'],['They like the red apple','Mereka suka apel merah'],['He has a big dog','Dia punya anjing besar'],['The cat is on the table','Kucing itu di atas meja']]},
+{t:'Tata Bahasa',i:'🏆',c:'#c2255c',items:[['I went to the market yesterday','Aku pergi ke pasar kemarin'],['She is eating an apple now','Dia sedang makan apel sekarang'],['We will visit Bali next week','Kami akan mengunjungi Bali minggu depan'],['He does not like coffee','Dia tidak suka kopi'],['Have you finished your homework','Sudahkah kamu menyelesaikan PR-mu'],['If it rains we stay home','Jika hujan kami tinggal di rumah']]}];
+const ALL=UNITS.flatMap(u=>u.items);
+const STORIES=[
+{t:'Robot yang Kelaparan',m:'zed',s:[
+['Zed the robot says: I am very hungry! I want to eat a clock!',{q:'What does Zed want to eat?',o:['A clock','A cake','A book'],a:0}],
+['Lila says: A clock is not food! Eat this banana, please.',{q:'What does Lila give Zed?',o:['An apple','A banana','Water'],a:1}],
+['Zed eats it and says: Now I am a happy monkey!',{q:'How does Zed feel now?',o:['Sad','Angry','Happy'],a:2}]]},
+{t:'Kucing di Kelas',m:'lila',s:[
+['Lila comes to class with a big hat. The teacher asks: Why are you wearing a hat inside?',{q:'Where is Lila?',o:['At the beach','In class','At home'],a:1}],
+['Lila answers: Because my cat is sleeping under it!',{q:'Where is the cat?',o:['Under the hat','On the table','In the bag'],a:0}],
+['The teacher says: Wake him up. Lila says: No! Class is too boring for him.',{q:'Why does Lila not wake the cat?',o:['He is hungry','He is sick','He finds class boring'],a:2}]]}];
+const BOTS=[['Rizky',520],['Salsa',470],['Dimas',430],['Nadia',390],['Fajar',340],['Putri',300],['Bayu',260],['Citra',220],['Eko',180],['Wulan',140],['Tono',100],['Mira',60]];
+/* ===== KONFIGURASI =====
+SHEET_URL : isi dengan URL Web App Google Apps Script agar progres otomatis masuk ke Google Sheets/Excel (lihat README).
+TEACHER_PIN : PIN untuk membuka Dasbor Guru. Ganti sebelum dipakai di kelas. */
+const SHEET_URL='',TEACHER_PIN='guru123';
+let S=null,U={},CUR=null,V='ob',OB={s:0,m:'byte',g:20},AU={tab:'in',er:''},L=null,ST=null,AC;
+try{U=JSON.parse(localStorage.getItem('ebi_users'))||{};CUR=localStorage.getItem('ebi_cur')}catch(e){}
+if(CUR&&U[CUR]&&U[CUR].data){S=U[CUR].data;V=S.level?'home':'ob';if(!S.level)OB.s=1}else{CUR=null;V=Object.keys(U).length?'auth':'ob'}
+const save=()=>{try{if(CUR&&S)U[CUR].data=S;localStorage.setItem('ebi_users',JSON.stringify(U))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';'),hs=s=>{let x=0;for(const c of s)x=(x*31+c.charCodeAt(0))|0;return String(x)};
+function sync(){if(!S)return;const t=today();if(S.hd!==t){S.hearts=5;S.hd=t}if(S.dd!==t){S.dayXp=0;S.dd=t}if(S.wk!==wk()){S.wxp=0;S.wk=wk()}if(S.last&&S.last!==t&&S.last!==yest())S.streak=0;save()}
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.append(e);setTimeout(()=>e.remove(),1800)}
+/* mascot */
+function mascot(k,mood='happy',sz=96){const c=MASC[k].c;
+const eye=mood==='sad'?'<path d="M30 42q6-6 12 0M58 42q6-6 12 0" stroke="#2b2250" stroke-width="4" fill="none" stroke-linecap="round"/>':'<circle cx="36" cy="42" r="8" fill="#fff"/><circle cx="64" cy="42" r="8" fill="#fff"/><circle cx="37" cy="43" r="4" fill="#2b2250"/><circle cx="65" cy="43" r="4" fill="#2b2250"/>';
+const mouth=mood==='sad'?'M42 70q8-8 16 0':mood==='cheer'?'M38 64q12 18 24 0z':'M40 66q10 10 20 0';
+const top=k==='byte'?`<path d="M18 28l8-18 14 14zM82 28l-8-18-14 14z" fill="${c}"/>`:k==='lila'?`<path d="M16 34l4-24 22 14zM84 34l-4-24-22 14z" fill="${c}"/>`:`<rect x="47" y="4" width="6" height="14" fill="${c}"/><circle cx="50" cy="5" r="5" fill="#ffb703"/>`;
+const ex=k==='byte'?'<path d="M44 54l6 7 6-7z" fill="#ffb703"/>':k==='lila'?'<path d="M8 56h16M8 62l15-3M92 56H76M92 62l-15-3" stroke="#2b2250" stroke-width="2"/>':'';
+return `<svg viewBox="0 0 100 100" width="${sz}" height="${sz}" class="mas ${mood}" role="img" aria-label="${MASC[k].n}">${top}<rect x="12" y="22" width="76" height="70" rx="${k==='zed'?16:34}" fill="${c}"/><ellipse cx="50" cy="78" rx="26" ry="10" fill="#fff" opacity=".25"/>${eye}${ex}<path d="${mouth}" stroke="#2b2250" stroke-width="4" fill="${mood==='cheer'?'#fff':'none'}" stroke-linecap="round"/></svg>`}
+/* sound, haptics, speech */
+function fx(ok){if(navigator.vibrate)navigator.vibrate(ok?30:[80,40,80]);if(S&&S.mute)return;try{AC=AC||new(window.AudioContext||webkitAudioContext)();const t=AC.currentTime;(ok?[523,659,784]:[220,165]).forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ok?'triangle':'sawtooth';o.frequency.value=f;g.gain.setValueAtTime(.15,t+i*.1);g.gain.exponentialRampToValueAtTime(.001,t+i*.1+.18);o.connect(g);g.connect(AC.destination);o.start(t+i*.1);o.stop(t+i*.1+.2)})}catch(e){}}
+function say(t){if(!('speechSynthesis'in window))return toast('Suara tidak didukung browser ini');const m=MASC[(S&&S.m)||OB.m];speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=m.lang;u.pitch=m.p;u.rate=m.r;const v=speechSynthesis.getVoices().find(v=>v.lang.replace('_','-')===m.lang);if(v)u.voice=v;speechSynthesis.speak(u)}
+function confetti(){const c=$('#cf'),x=c.getContext('2d');c.width=innerWidth;c.height=innerHeight;const P=Array.from({length:140},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height/2,s:5+Math.random()*7,v:2+Math.random()*4,a:Math.random()*6,c:pick(['#6c4cf1','#ffb703','#1fbf75','#ff5a5f','#18b6cc','#ff6fae'])}));let f=0;(function d(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.x+=Math.sin(p.a+=.07)*2;x.fillStyle=p.c;x.fillRect(p.x,p.y,p.s,p.s*.6)});if(++f<170)requestAnimationFrame(d);else x.clearRect(0,0,c.width,c.height)})()}
+/* router */
+const TABS=[['home','🗺️','Belajar'],['story','📖','Cerita'],['rank','🏆','Liga'],['me','🐾','Profil']];
+function draw(){const a=$('#app');if(V==='lesson')return drawLesson();if(V==='ob')return a.innerHTML=obHTML();if(V==='auth')return a.innerHTML=authHTML();if(V==='guru')return a.innerHTML=guruHTML();if(V==='play')return a.innerHTML=playHTML();if(V==='sum')return;
+sync();const H=`<header class="top"><span class="pill">🇬🇧 English</span><span class="pill">🔥 ${S.streak}</span><span class="pill">⚡ ${S.xp}</span><span class="pill">❤️ ${S.hearts}</span></header>`;
+const b={home:homeHTML,story:storyHTML,rank:rankHTML,me:meHTML}[V]();
+a.innerHTML=H+`<main>${b}</main><nav class="bar"><div>${TABS.map(t=>`<button class="${V===t[0]?'on':''}" onclick="V='${t[0]}';draw()"><b>${t[1]}</b>${t[2]}</button>`).join('')}</div></nav>`;scrollTo(0,0)}
+/* onboarding */
+function obHTML(){const s=OB.s;
+if(s===0)return `<div class="c stack" style="padding-top:12vh">${mascot('byte','cheer',150)}<h1>English Byte<br>Interactive</h1><p class="mut">Belajar bahasa Inggris seperti bermain gim. Gratis, cukup 5 menit sehari.</p><button class="btn" onclick="AU={tab:'up',er:''};V='auth';draw()">Get Started</button><button class="btn ghost" onclick="AU={tab:'in',er:''};V='auth';draw()">Saya sudah punya akun</button></div>`;
+if(s===1)return `<div class="stack"><h2>Pilih pemandu dan target harianmu</h2>${Object.keys(MASC).map(k=>`<button class="opt ${OB.m===k?'sel':''}" onclick="OB.m='${k}';say('Hi! I am ${MASC[k].n}. Let us learn English!');draw()"><span class="say">${mascot(k,'happy',56)}<span><b style="font-size:19px">${MASC[k].n}</b><br><small class="mut">${MASC[k].d}</small></span></span></button>`).join('')}<h3>Berapa XP yang ingin kamu raih per hari?</h3>${[[10,'Santai'],[20,'Biasa'],[30,'Serius']].map(g=>`<button class="opt ${OB.g===g[0]?'sel':''}" onclick="OB.g=${g[0]};draw()">${g[1]}: ${g[0]} XP / hari</button>`).join('')}<button class="btn" onclick="mk();OB.s=2;draw()">Lanjut</button></div>`;
+if(s===2)return `<div class="c stack" style="padding-top:8vh">${mascot(OB.m,'happy',120)}<h2>Tes penempatan</h2><p class="mut">6 soal singkat agar ${MASC[OB.m].n} tahu level yang pas untukmu. Tidak mengurangi hati.</p><button class="btn" onclick="startLesson(0,'place')">Mulai tes</button><button class="btn ghost" onclick="V='home';draw()">Mulai dari dasar</button></div>`;return ''}
+function mk(){S=S||{};Object.assign(S,{name:S.name||'',m:OB.m,goal:OB.g,level:1,xp:0,wxp:0,dayXp:0,streak:0,last:'',hearts:5,done:0,mute:0});sync()}
+/* home */
+function homeHTML(){const p=Math.min(100,S.dayXp/S.goal*100);let n=0;
+return `<div class="card"><b>Target harian: ${S.dayXp}/${S.goal} XP</b><div class="goal"><i style="width:${p}%"></i></div><small class="mut">Tingkat kesulitanmu: ${LV[S.level]} (menyesuaikan performamu)</small></div>`+UNITS.map((u,ui)=>`<div class="unit" style="background:${u.c}"><span>Unit ${ui+1}: ${u.t}</span><span style="font-size:26px">${u.i}</span></div><div class="path">${[0,1].map(()=>{const i=n++,st=i<S.done?'':i===S.done?'now':'lock';return `<button class="node ${st}" style="transform:translateX(${[0,46,-46,0][i%4]}px)" aria-label="Pelajaran ${i+1}" onclick="${st==='lock'?"toast('Selesaikan pelajaran sebelumnya dulu')":`startLesson(${i})`}">${st==='lock'?'🔒':i<S.done?'⭐':u.i}</button>`}).join('')}</div>`).join('')}
+/* lesson engine */
+function mkQ(it,lv){const multi=it[0].includes(' ');const T={1:multi?['bank','listen','bank','choice']:['choice','listen','choice','type'],2:multi?['listen','bank','type','speak']:['listen','type','choice','speak'],3:['type','speak','listen','type']};
+const t=pick(T[lv]),oth=sh(ALL.filter(x=>x!==it&&x[0].includes(' ')===multi)).slice(0,3);
+const q={t,it,opts:[]};
+if(t==='choice'){q.opts=sh([it[1],...oth.map(x=>x[1])])}
+if(t==='listen'){q.opts=sh([it[0],...oth.map(x=>x[0])])}
+if(t==='bank'){q.opts=sh([...it[0].split(' '),...sh(ALL.flatMap(x=>x[0].split(' '))).slice(0,2)]);q.pk=[]}
+return q}
+function startLesson(idx,mode){sync();if(mode!=='place'&&S.hearts<=0)return toast('Hati habis. Kembali lagi besok!');
+const qs=mode==='place'?[0,0,1,2,3,3].map((u,k)=>mkQ(pick(UNITS[u].items),[1,1,2,2,3,3][k])):sh(UNITS[idx>>1].items).slice(0,6).map(it=>mkQ(it,S.level));
+L={qs,i:0,ok:0,wrong:0,xp:0,t0:Date.now(),mode,idx};V='lesson';draw()}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+function drawLesson(){const q=L.qs[L.i],it=q.it;L.ans='';L.q0=Date.now();let h='';
+const sp=`<button class="spk" aria-label="Putar audio" onclick="say(L.qs[L.i].it[0])">🔊</button>`;
+if(q.t==='choice')h=`<h2>Apa arti kata ini?</h2><div class="say">${sp}<b>${it[0]}</b></div>`+q.opts.map((o,i)=>`<button class="opt" onclick="sel(${i})">${o}</button>`).join('');
+if(q.t==='listen')h=`<h2>Ketuk speaker, lalu pilih yang kamu dengar</h2><div class="c">${sp.replace('52px','')}</div>`+q.opts.map((o,i)=>`<button class="opt" onclick="sel(${i})">${o}</button>`).join('');
+if(q.t==='bank')h=`<h2>Susun kalimat dalam bahasa Inggris</h2><div class="say">${mascot(S.m,'happy',64)}<div class="bub">${it[1]}</div></div><div class="ans" id="ans"></div><div id="bk"></div>`;
+if(q.t==='type')h=`<h2>Tulis dalam bahasa Inggris</h2><div class="say">${mascot(S.m,'happy',64)}<div class="bub">${it[1]}</div></div><div style="margin-top:16px"><input class="t" id="ti" autocomplete="off" autocapitalize="off" placeholder="Ketik di sini" oninput="L.ans=this.value;$('#chk').disabled=!this.value.trim()"></div>`;
+if(q.t==='speak')h=`<h2>Ucapkan kalimat ini</h2><div class="say">${sp}<b>${it[0]}</b></div>`+(SR?`<button class="mic" aria-label="Mulai bicara" onclick="listen()">🎤</button><p class="c mut" id="hd">Ketuk mikrofon dan bicara</p>`:`<p class="mut">Mikrofon tidak didukung browser ini. Ketik kalimatnya:</p><input class="t" oninput="L.ans=this.value;$('#chk').disabled=!this.value.trim()">`);
+$('#app').innerHTML=`<div class="ltop"><button class="x" aria-label="Keluar" onclick="quit()">✕</button><div class="prog"><i style="width:${L.i/L.qs.length*100}%"></i></div><b>${L.mode==='place'?'Tes':'❤️ '+S.hearts}</b></div><main id="stage">${h}</main><footer id="foot"><button class="btn" id="chk" disabled onclick="check()">Periksa</button></footer>`;
+if(q.t==='bank')bk();if(q.t==='listen'||q.t==='speak')setTimeout(()=>say(it[0]),300)}
+function bk(){const q=L.qs[L.i];$('#ans').innerHTML=q.pk.map((i,k)=>`<span class="chip" onclick="q_=L.qs[L.i];q_.pk.splice(${k},1);bk()">${q.opts[i]}</span>`).join('');$('#bk').innerHTML=q.opts.map((w,i)=>`<span class="chip ${q.pk.includes(i)?'used':''}" onclick="L.qs[L.i].pk.push(${i});bk()">${w}</span>`).join('');L.ans=q.pk.map(i=>q.opts[i]).join(' ');$('#chk').disabled=!q.pk.length}
+function sel(i){L.ans=L.qs[L.i].opts[i];document.querySelectorAll('.opt').forEach((b,k)=>b.classList.toggle('sel',k===i));$('#chk').disabled=false}
+function listen(){const r=new SR();r.lang=MASC[S.m].lang;r.onresult=e=>{L.ans=e.results[0][0].transcript;$('#hd').textContent='Kamu bilang: "'+L.ans+'"';$('#chk').disabled=false};r.onerror=()=>{$('#hd').textContent='Mikrofon gagal. Periksa izin browser.'};r.onend=()=>{if(!L.ans)$('#hd').textContent='Tidak terdengar. Coba lagi.'};r.start();$('#hd').textContent='Mendengarkan...'}
+function check(){const q=L.qs[L.i],secs=(Date.now()-L.q0)/1e3;let ok;
+if(q.t==='choice')ok=L.ans===q.it[1];else if(q.t==='speak'){const a=norm(L.ans).split(' '),b=norm(q.it[0]).split(' ');ok=b.filter(w=>a.includes(w)).length/b.length>=.8}else ok=norm(L.ans)===norm(q.it[0]);
+const dbl=q.t==='choice'?q.it[1]+' = '+q.it[0]:q.it[0];
+if(ok){L.ok++;L.xp+=secs<8?15:10}else{L.wrong++;if(L.mode!=='place'){S.hearts--;save();L.qs.push(mkQ(q.it,Math.max(1,S.level-1)))}}
+fx(ok);document.querySelectorAll('.opt').forEach(b=>{b.disabled=true;if(b.textContent===(q.t==='choice'?q.it[1]:q.it[0]))b.classList.add('good');else if(b.classList.contains('sel'))b.classList.add('err')});
+if(!ok)$('#stage').classList.add('shake');
+const f=$('#foot');f.className=ok?'ok':'bad';f.innerHTML=`<div class="say">${mascot(S.m,ok?'cheer':'sad',54)}<div class="msg" style="margin:0;flex:1">${ok?pick(['Benar! Keren!','Mantap!','Tepat sekali!']):'Jawaban yang benar: '+dbl}</div></div><button class="btn ${ok?'ok':'bad'}" style="margin-top:12px" onclick="nxt()">Lanjut</button>`}
+function nxt(){if(L.mode!=='place'&&S.hearts<=0){V='sum';return sumHTML('sad','Hati habis!','Hati terisi kembali besok. Latihan hari ini cukup sampai di sini.','Kembali')}
+if(++L.i>=L.qs.length)return finish();drawLesson()}
+function quit(){if(confirm('Keluar? Progres sesi ini hilang.')){V=L.mode==='place'?'ob':'home';draw()}}
+function finish(){const tot=L.ok+L.wrong,acc=Math.round(L.ok/tot*100),secs=Math.round((Date.now()-L.t0)/1e3);let msg;
+if(L.mode==='place'){S.level=L.ok>=5?3:L.ok>=3?2:1;S.done=L.ok>=5?4:L.ok>=3?2:0;msg='Hasil tes: tingkat '+LV[S.level]+'. Jalur belajarmu disesuaikan.';save();return sumHTML('cheer','Tes selesai!',msg,'Lanjut','home',L.ok+'/6',acc,secs)}
+const bonus=acc===100?10:0,gain=L.xp+bonus;S.xp+=gain;S.wxp+=gain;S.dayXp+=gain;
+if(S.last!==today()){S.streak=S.last===yest()?S.streak+1:1;S.last=today()}
+S.done=Math.max(S.done,L.idx+1);
+if(acc>=90&&secs/L.qs.length<9&&S.level<3){S.level++;msg='Kamu cepat dan tepat! Tingkat naik ke '+LV[S.level]+'.'}else if(acc<60&&S.level>1){S.level--;msg='Materi disesuaikan ke tingkat '+LV[S.level]+' agar lebih nyaman.'}else msg='Tingkat kesulitan tetap: '+LV[S.level]+'.';
+(S.log=S.log||[]).push({t:new Date().toISOString(),u:UNITS[L.idx>>1].t,n:L.idx%2+1,acc,xp:gain,s:secs,lv:S.level});S.log=S.log.slice(-300);save();syncSheet();confetti();sumHTML('cheer','Pelajaran selesai!',msg,'Lanjut','home','+'+gain+' XP',acc,secs)}
+function sumHTML(mood,t,m,btn,to,xp,acc,secs){V='sum';$('#app').innerHTML=`<div class="c stack" style="padding-top:8vh">${mascot(S.m,mood,130)}<h1>${t}</h1><p class="mut">${m}</p>${xp?`<div class="row"><div class="card stat">${xp}<small>perolehan</small></div><div class="card stat">${acc}%<small>akurasi</small></div><div class="card stat">${secs}d<small>waktu</small></div></div>`:''}<button class="btn" onclick="V='${to||'home'}';draw()">${btn}</button></div>`}
+/* stories */
+function storyHTML(){return `<h2>English Byte Interactive Stories</h2><p class="mut">Cerita pendek lucu untuk menguji pemahaman konteks. Hadiah +20 XP.</p><div class="stack" style="margin-top:14px">`+STORIES.map((s,i)=>`<button class="opt" onclick="ST={i:${i},k:0,w:0};V='play';draw()"><span class="say">${mascot(s.m,'happy',56)}<b style="font-size:19px">${s.t}</b></span></button>`).join('')+'</div>'}
+function playHTML(){const s=STORIES[ST.i],st=s.s[ST.k];return `<div class="ltop"><button class="x" aria-label="Tutup" onclick="V='story';draw()">✕</button><div class="prog"><i style="width:${ST.k/s.s.length*100}%"></i></div></div><div class="say">${mascot(s.m,'happy',72)}<div class="bub">${st[0]}</div><button class="spk" aria-label="Putar" onclick="say(STORIES[ST.i].s[ST.k][0])">🔊</button></div><h2>${st[1].q}</h2>`+st[1].o.map((o,i)=>`<button class="opt" onclick="pa(this,${i})">${o}</button>`).join('')}
+function pa(b,i){const s=STORIES[ST.i],st=s.s[ST.k];if(i!==st[1].a){fx(0);b.classList.add('err');b.disabled=true;return}fx(1);b.classList.add('good');document.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+setTimeout(()=>{if(++ST.k<s.s.length)return draw();S.xp+=20;S.wxp+=20;S.dayXp+=20;save();syncSheet();confetti();sumHTML('cheer','Cerita selesai!','Kamu memahami ceritanya dengan baik.','Kembali','story','+20 XP',100,0)},700)}
+/* leaderboard */
+function rankHTML(){const d=((new Date().getDay()+6)%7)+1,lg=S.xp<300?['Perunggu','🥉']:S.xp<1000?['Perak','🥈']:['Emas','🥇'];
+const R=[...BOTS.map(b=>({n:b[0],x:Math.round(b[1]*(.3+.7*d/7))})),{n:esc(S.name)+' (kamu)',x:S.wxp,me:1}].sort((a,b)=>b.x-a.x);
+return `<div class="c">${mascot(S.m,'happy',70)}<h2 style="margin:0">Liga ${lg[0]} ${lg[1]}</h2><p class="mut">XP mingguan direset tiap Senin. 3 teratas naik liga.</p></div><div class="stack" style="margin-top:12px">`+R.map((r,i)=>`<div class="rk ${r.me?'me':''} ${i<3?'up':''}"><span>${i+1}</span><span>${r.n}</span><span>${r.x} XP</span></div>`).join('')+'</div>'}
+/* profile */
+function meHTML(){return `<div class="c stack">${mascot(S.m,'happy',100)}<h2 style="margin:0">${esc(S.name)}</h2><p class="mut" style="margin:0">@${S.username}</p><div class="row"><div class="card stat">🔥 ${S.streak}<small>streak</small></div><div class="card stat">⚡ ${S.xp}<small>total XP</small></div><div class="card stat">${LV[S.level]}<small>tingkat</small></div></div></div><h3 style="margin-top:20px">Pemandu</h3>${Object.keys(MASC).map(k=>`<button class="opt ${S.m===k?'sel':''}" onclick="S.m='${k}';save();say('Hi! I am ${MASC[k].n}.');draw()">${MASC[k].n}: ${MASC[k].d}</button>`).join('')}
+<h3 style="margin-top:20px">Pengaturan</h3><button class="opt" onclick="S.mute=!S.mute;save();draw()">Efek suara: ${S.mute?'mati':'hidup'}</button><button class="opt" onclick="S.goal=S.goal%30+10;save();draw()">Target harian: ${S.goal} XP (ketuk untuk ganti)</button><h3 style="margin-top:20px">Data & akun</h3><button class="opt" onclick="xl([S],'progres-'+S.username)">📊 Ekspor progres ke Excel</button><button class="opt" onclick="cp()">Salin kode progres (untuk guru)</button><button class="opt" onclick="openGuru()">Dasbor guru</button><button class="opt" onclick="logout()">Keluar</button><button class="opt" onclick="if(confirm('Hapus akun ini beserta progresnya?')){delete U[CUR];logout()}">Hapus akun</button>`}
+function cp(){const c=btoa(unescape(encodeURIComponent(JSON.stringify({u:S.username,d:S}))));(navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(()=>toast('Kode disalin')).catch(()=>prompt('Salin kode ini:',c))}
+
+/* auth */
+function authHTML(){const up=AU.tab==='up',us=Object.keys(U).filter(k=>U[k].pin);
+return `<div class="c stack" style="padding-top:5vh">${mascot('byte','happy',96)}<h1>${up?'Buat akunmu':'Selamat datang kembali'}</h1><p class="mut">${up?'Gratis. Progresmu tersimpan dan bisa diekspor ke Excel.':'Masuk untuk melanjutkan streak dan XP-mu.'}</p>
+<div class="row"><button class="btn ${up?'ghost':''}" onclick="AU={tab:'in',er:''};draw()">Masuk</button><button class="btn ${up?'':'ghost'}" onclick="AU={tab:'up',er:''};draw()">Daftar</button></div>
+${up?'<input class="t" id="fn" placeholder="Nama tampilan" maxlength="16" autocomplete="name">':''}
+<input class="t" id="un" placeholder="Username (huruf kecil / angka)" autocapitalize="off" autocomplete="username" maxlength="16">
+<input class="t" id="pw" type="password" inputmode="numeric" maxlength="4" placeholder="PIN 4 angka" autocomplete="${up?'new-password':'current-password'}">
+<p id="er" role="alert" style="color:var(--badD);font-weight:700;min-height:22px"></p>
+<button class="btn ok" onclick="${up?'doReg()':'doLogin()'}">${up?'Daftar & mulai':'Masuk'}</button>
+${!up&&us.length?`<p class="mut">Akun di perangkat ini (ketuk untuk mengisi):</p><div>${us.map(k=>`<span class="chip" onclick="$('#un').value='${k}';$('#pw').focus()">${k}</span>`).join('')}</div>`:''}
+<button class="x" style="font-size:15px" onclick="openGuru()">Dasbor guru</button></div>`}
+function doReg(){const n=$('#fn').value.trim(),u=$('#un').value.trim().toLowerCase(),p=$('#pw').value,e=m=>$('#er').textContent=m;
+if(!n)return e('Isi nama tampilan.');if(!/^[a-z0-9_]{3,16}$/.test(u))return e('Username 3-16 karakter: huruf kecil, angka, atau _.');if(!/^\d{4}$/.test(p))return e('PIN harus 4 angka.');if(U[u])return e('Username sudah dipakai. Pilih yang lain.');
+S={name:n,username:u,created:new Date().toISOString(),log:[]};U[u]={pin:hs(u+p),data:S};CUR=u;try{localStorage.setItem('ebi_cur',u)}catch(x){}save();OB={s:1,m:'byte',g:20};V='ob';draw()}
+function doLogin(){const u=$('#un').value.trim().toLowerCase(),p=$('#pw').value;
+if(!U[u]||U[u].pin!==hs(u+p)||!U[u].data)return $('#er').textContent='Username atau PIN salah.';
+CUR=u;S=U[u].data;try{localStorage.setItem('ebi_cur',u)}catch(x){}if(S.level){V='home'}else{OB={s:1,m:'byte',g:20};V='ob'}draw()}
+function logout(){CUR=null;S=null;try{localStorage.removeItem('ebi_cur')}catch(x){}save();AU={tab:'in',er:''};V='auth';draw()}
+/* guru & excel */
+function openGuru(){const p=prompt('Masukkan PIN guru:');if(p===null)return;if(p===TEACHER_PIN){V='guru';draw()}else toast('PIN salah')}
+const allD=()=>Object.values(U).map(u=>u.data).filter(Boolean);
+function guruHTML(){const D=allD();return `<div class="ltop"><button class="x" aria-label="Tutup" onclick="V=S?'me':'auth';draw()">✕</button><h2 style="margin:0">Dasbor Guru</h2></div><div class="stack"><div class="card" style="overflow-x:auto"><table class="tb"><tr><th>Nama</th><th>Tingkat</th><th>XP</th><th>Streak</th><th>Selesai</th></tr>${D.map(d=>`<tr><td>${esc(d.name)}</td><td>${LV[d.level]||'-'}</td><td>${d.xp||0}</td><td>${d.streak||0}</td><td>${d.done||0}/8</td></tr>`).join('')||'<tr><td colspan="5">Belum ada siswa.</td></tr>'}</table></div>
+<button class="btn" onclick="xl(allD(),'progres-siswa-'+today())">📊 Ekspor semua ke Excel</button>
+<p class="mut" style="font-size:14px">Siswa di perangkat lain bisa mengirim kode progres dari menu Profil. Tempel di sini untuk menggabungkannya.</p>
+<input class="t" id="ic" placeholder="Tempel kode progres siswa"><button class="btn ghost" onclick="imp()">Impor kode siswa</button></div>`}
+function imp(){try{const o=JSON.parse(decodeURIComponent(escape(atob($('#ic').value.trim()))));if(!o.u||!o.d)throw 0;U[o.u]=U[o.u]||{pin:null};U[o.u].data=o.d;if(o.u===CUR)S=o.d;save();toast('Siswa diimpor');draw()}catch(e){toast('Kode tidak valid')}}
+const rowSum=d=>({'Nama':d.name,'Username':d.username||'-','Tingkat':LV[d.level]||'-','Total XP':d.xp||0,'XP Minggu Ini':d.wxp||0,'Streak':d.streak||0,'Pelajaran Selesai':(d.done||0)+'/8','Hati':d.hearts==null?'-':d.hearts,'Terakhir Belajar':d.last||'-','Dibuat':(d.created||'').slice(0,10)});
+function xl(list,fn){if(!list.length)return toast('Belum ada data');
+const rows=list.map(rowSum),his=list.flatMap(d=>(d.log||[]).map(l=>({'Nama':d.name,'Username':d.username||'-','Waktu':l.t.replace('T',' ').slice(0,16),'Unit':l.u,'Pelajaran':l.n,'Akurasi (%)':l.acc,'XP':l.xp,'Durasi (detik)':l.s,'Tingkat':LV[l.lv]||'-'})));
+if(window.XLSX){const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),'Ringkasan');XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(his.length?his:[{Info:'Belum ada riwayat sesi'}]),'Riwayat Sesi');XLSX.writeFile(wb,fn+'.xlsx');return toast('File Excel diunduh')}
+const q=v=>'"'+String(v).replace(/"/g,'""')+'"',k=Object.keys(rows[0]),csv='\ufeff'+[k.map(q).join(','),...rows.map(r=>k.map(c=>q(r[c])).join(','))].join('\r\n'),a=document.createElement('a');
+a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=fn+'.csv';a.click();toast('Library Excel gagal dimuat, diunduh sebagai CSV (bisa dibuka di Excel)')}
+function syncSheet(){if(!SHEET_URL||!S)return;try{fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(rowSum(S))})}catch(e){}}
+if('speechSynthesis'in window)speechSynthesis.getVoices();
+draw();
+</script>
+</body>
+</html>
